@@ -50,7 +50,7 @@ def is_plagiat(w1, w2):
     return len(s) < 2
 
 
-with open("words.txt", "r") as file:
+with open("../hw1/words.txt", "r") as file:
     for line in file:
         word1, word2 = line.strip().split()
         is_plagiat(word1, word2)
