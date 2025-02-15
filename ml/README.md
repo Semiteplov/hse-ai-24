@@ -5,7 +5,8 @@
  - [Stepik "Практический Machine Learning"](https://stepik.org/course/125501/syllabus)
 
 ## Домашние задания
- - [EDA и Линейная регрессия с инференсом](lesson_1/hometask/AI_HW1_Regression_with_inference_pro.ipynb) 
- - [Градиентный спуск](lesson_2/hometask/AI_HW2_GD_pro.ipynb)
- - [Линейная классификация (+ парсинг)](lesson_3/hometask/AI_HW3_Classification_pro.ipynb)
- - [Решающее дерево и случайный лес](lesson_3/hometask/AI_HW3_Classification_pro.ipynb)
+ - [EDA и Линейная регрессия с инференсом](hws/lesson_1/hometask/AI_HW1_Regression_with_inference_pro.ipynb) 
+ - [Градиентный спуск](hws/lesson_2/hometask/AI_HW2_GD_pro.ipynb)
+ - [Линейная классификация (+ парсинг)](hws/lesson_3/hometask/AI_HW3_Classification_pro.ipynb)
+ - [Решающее дерево и случайный лес](hws/lesson_4/hometask/AI_HW4_woodenML_pro.ipynb)
+ - [Бустинг и кластеризация](hws/lesson_5/hometask/AI_HW5_boosting_pro.ipynb)
