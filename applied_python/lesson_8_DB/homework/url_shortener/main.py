@@ -55,16 +55,10 @@ def shorten_link(link: LinkCreate, db: Session = Depends(get_db), user: User = D
     return db_link
 
 
-@app.get("/{short_code}")
-def redirect_to_original(short_code: str, db: Session = Depends(get_db)):
-    cached_url = get_cached_url(short_code)
-    if cached_url:
-        return RedirectResponse(url=cached_url.decode("utf-8"))
-    db_link = get_link_by_short_code(db, short_code)
-    if db_link:
-        set_cached_url(short_code, db_link.original_url)
-        return RedirectResponse(url=db_link.original_url)
-    raise HTTPException(status_code=404, detail="Link not found")
+@app.get("/links/expired", response_model=list[LinkResponse])
+def get_expired(db: Session = Depends(get_db)):
+    """Список истекших ссылок"""
+    return get_expired_links(db)
 
 
 @app.get("/links/{short_code}")
@@ -124,12 +118,6 @@ def cleanup_links(n_days: int = Query(30, ge=1), db: Session = Depends(get_db)):
     """Удаляет ссылки, не использованные более N дней"""
     removed = cleanup_unused_links(db, max_days=n_days)
     return removed
-
-
-@app.get("/links/expired", response_model=list[LinkResponse])
-def get_expired(db: Session = Depends(get_db)):
-    """Список истекших ссылок"""
-    return get_expired_links(db)
 
 
 @app.post("/register")
