@@ -61,6 +61,12 @@ def get_expired(db: Session = Depends(get_db)):
     return get_expired_links(db)
 
 
+@app.get("/links/search", response_model=list[LinkResponse])
+def search_links(original_url: str, db: Session = Depends(get_db)):
+    links = search_links_by_original_url(db, original_url)
+    return links
+
+
 @app.get("/links/{short_code}")
 def redirect_to_original(short_code: str, db: Session = Depends(get_db)):
     cached_url = get_cached_url(short_code)
@@ -105,12 +111,6 @@ def update_short_link(short_code: str, data: LinkUpdate, db: Session = Depends(g
     db.commit()
     db.refresh(db_link)
     return db_link
-
-
-@app.get("/links/search", response_model=list[LinkResponse])
-def search_links(original_url: str, db: Session = Depends(get_db)):
-    links = search_links_by_original_url(db, original_url)
-    return links
 
 
 @app.delete("/cleanup-unused-links", response_model=list[LinkResponse])
