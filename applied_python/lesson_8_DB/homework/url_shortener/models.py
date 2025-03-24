@@ -24,7 +24,7 @@ class Link(Base):
     last_visited_at = Column(DateTime, nullable=True)
     user_id = Column(Integer, ForeignKey("users.id"), nullable=True)
     owner = relationship("User", back_populates="links")
-    visits = relationship("Visit", back_populates="link")
+    visits = relationship("Visit", back_populates="link", cascade="all, delete-orphan")
 
 
 class Visit(Base):

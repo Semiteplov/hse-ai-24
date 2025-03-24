@@ -1,3 +1,4 @@
+import logging
 import random
 import string
 from contextlib import asynccontextmanager
@@ -25,6 +26,7 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(lifespan=lifespan)
+logging.basicConfig(level=logging.INFO)
 
 
 def generate_short_code(length: int = 6) -> str:
@@ -68,22 +70,26 @@ def redirect_to_original(short_code: str, db: Session = Depends(get_db)):
 @app.get("/links/{short_code}")
 def redirect_to_original(short_code: str, db: Session = Depends(get_db)):
     cached_url = get_cached_url(short_code)
-    if cached_url:
-        increment_link_score(short_code)
-        return RedirectResponse(url=cached_url.decode("utf-8"))
-
     db_link = get_link_by_short_code(db, short_code)
     if not db_link:
         raise HTTPException(status_code=404, detail="Link not found")
 
-    if db_link.expires_at and db_link.expires_at < datetime.now(timezone.utc):
+    expires_at = db_link.expires_at
+    if expires_at and expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+
+    if expires_at and expires_at < datetime.now(timezone.utc):
         delete_link(db, short_code)
         delete_cached_url(short_code)
         raise HTTPException(status_code=410, detail="Link has expired")
 
-    set_cached_url(short_code, db_link.original_url)
-    increment_link_score(short_code)
     add_visit(db, db_link)
+    increment_link_score(short_code)
+
+    if cached_url:
+        return RedirectResponse(url=cached_url.decode("utf-8"))
+
+    set_cached_url(short_code, db_link.original_url)
     return RedirectResponse(url=db_link.original_url)
 
 

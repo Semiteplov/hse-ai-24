@@ -1,6 +1,6 @@
 from datetime import datetime, timedelta, timezone
 
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload
 
 from cache import delete_cached_url, remove_from_popular
 from models import Link, Visit
@@ -40,10 +40,7 @@ def update_link(db: Session, short_code: str, new_url: str):
 
 
 def get_link_stats(db: Session, short_code: str):
-    db_link = get_link_by_short_code(db, short_code)
-    if db_link:
-        return db_link
-    return None
+    return db.query(Link).options(joinedload(Link.visits)).filter(Link.short_code == short_code).first()
 
 
 def search_links_by_original_url(db: Session, original_url: str):
