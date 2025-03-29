@@ -1,0 +1,8 @@
+pytest
+httpx
+pytest-asyncio
+pytest-mock
+coverage
+locust
+pytest-cov
+python-multipart
